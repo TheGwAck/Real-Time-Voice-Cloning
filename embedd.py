@@ -1,10 +1,40 @@
 #Steps to get embedding:
+#First step is loading the pretrained model, (the code for this is in inference.py for RTVC)
 #1. Main function to compute embeddings of a batch of utterances is embed_utterance( in inference.py for RTVC and in voice.encoder.py for Resemblyzer)
 # 2.After the batch you need to group them in speakers and use embed speakers for that. (embed_speaker is not implemented for RTVC
 # and is in the voice.encoder.py file for resemblyzer)
 
 Details of each function
-1. Embed Utterance
+
+1. Loading the model:
+    def load_model(weights_fpath: Path, device=None):
+    """
+    Loads the model in memory. If this function is not explicitely called, it will be run on the
+    first call to embed_frames() with the default weights file.
+    :param weights_fpath: the path to saved model weights.
+    :param device: either a torch device or the name of a torch device (e.g. "cpu", "cuda"). The
+    model will be loaded and will run on this device. Outputs will however always be on the cpu.
+    If None, will default to your GPU if it"s available, otherwise your CPU.
+    """
+    # TODO: I think the slow loading of the encoder might have something to do with the device it
+    #   was saved on. Worth investigating.
+    global _model, _device
+    if device is None:
+        _device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    elif isinstance(device, str):
+        _device = torch.device(device)
+    _model = SpeakerEncoder(_device, torch.device("cpu"))
+    checkpoint = torch.load(weights_fpath, _device)
+    _model.load_state_dict(checkpoint["model_state"])
+    _model.eval()
+    print("Loaded encoder \"%s\" trained to step %d" % (weights_fpath.name, checkpoint["step"]))
+
+
+
+
+
+
+2. Embed Utterance
 
 def embed_utterance(wav, using_partials=True, return_partials=False, **kwargs):
     """
@@ -51,7 +81,7 @@ def embed_utterance(wav, using_partials=True, return_partials=False, **kwargs):
         return embed, partial_embeds, wave_slices
     return embed
  
-2. Embed Speaker 
+3. Embed Speaker 
 
  def embed_speaker(self, wavs: List[np.ndarray], **kwargs):
         """

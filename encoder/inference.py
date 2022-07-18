@@ -156,9 +156,10 @@ def embed_utterance(wav, using_partials=True, return_partials=False, **kwargs):
 
 
 def embed_speaker(wavs, **kwargs):
-    raise NotImplemented()
-
-
+     raw_embed = np.mean([self.embed_utterance(wav, return_partials=False, **kwargs) \
+                             for wav in wavs], axis=0)
+     return raw_embed / np.linalg.norm(raw_embed, 2)
+  
 def plot_embedding_as_heatmap(embed, ax=None, title="", shape=None, color_range=(0, 0.30)):
     import matplotlib.pyplot as plt
     if ax is None:

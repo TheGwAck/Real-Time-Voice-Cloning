@@ -2,7 +2,7 @@ from params_data import *
 from model import SpeakerEncoder
 from audio import preprocess_wav   # We want to expose this function from here
 from matplotlib import cm
-from encoder import audio
+import audio
 from pathlib import Path
 import numpy as np
 import torch

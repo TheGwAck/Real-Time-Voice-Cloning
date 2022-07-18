@@ -99,6 +99,7 @@ def compute_partial_slices(n_samples, partial_utterance_n_frames=partials_n_fram
 
     # Evaluate whether extra padding is warranted or not
     last_wav_range = wav_slices[-1]
+    print("Jawad")
     coverage = (n_samples - last_wav_range.start) / (last_wav_range.stop - last_wav_range.start)
     if coverage < min_pad_coverage and len(mel_slices) > 1:
         mel_slices = mel_slices[:-1]

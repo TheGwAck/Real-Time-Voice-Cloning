@@ -4,13 +4,13 @@ import numpy as np
 import soundfile as sf
 import torch
 
+from encoder.audio import preprocess_wav
 from encoder import inference as encoder
-from encoder import preprocess
 from encoder.params_model import model_embedding_size as speaker_embedding_size
-from synthesizer.inference import Synthesizer
+
 from utils.argutils import print_args
 from utils.default_models import ensure_default_models
-from vocoder import inference as vocoder
+
 
 model = sys.argv[1]
 speaker1 = sys.argv[2]
@@ -32,7 +32,7 @@ if torch.cuda.is_available():
         print("Using CPU for inference.\n")
         
 print("Preparing the encoder")
-ensure_default_models(Path("saved_models"))
+
 encoder.load_model(args.enc_model_fpath)
     
  #preprocessing wavs

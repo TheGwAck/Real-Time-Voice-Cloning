@@ -3,18 +3,21 @@ import librosa
 import numpy as np
 import soundfile as sf
 import torch
+import matplotlib.pyplot as plt
+from pathlib import Path
+from tqdm import tqdm
 
+from sklearn.preprocessing import normalize
 from encoder.audio import preprocess_wav
-from encoder import inference as encoder
+import encoder.inference as encoder
 from encoder.params_model import model_embedding_size as speaker_embedding_size
+from similarity import plot_similarity_matrix, plot_histograms
 
 from utils.argutils import print_args
-from utils.default_models import ensure_default_models
-
+from itertools import groupby
 
 model = sys.argv[1]
-speaker1 = sys.argv[2]
-speaker2= sys.argv[3]
+path = sys.argv[2]
 
 if torch.cuda.is_available():
         device_id = torch.cuda.current_device()
@@ -28,33 +31,44 @@ if torch.cuda.is_available():
             gpu_properties.major,
             gpu_properties.minor,
             gpu_properties.total_memory / 1e9))
-    else:
+else:
         print("Using CPU for inference.\n")
-        
+
 print("Preparing the encoder")
 
-encoder.load_model(args.enc_model_fpath)
-    
- #preprocessing wavs
+_model = encoder.load_model(model)
+#preprocessing wavs
 
 
-wav_1_fpaths = list(Path(path, speaker_1).glob("*.wav"))
-wav_2_fpaths = list(Path(path, speaker_2).glob("*.wav"))
+wav_fpaths = list(Path(path).glob("**/*.wav"))
 
-
-speaker_1_wavs = {speaker_1: list(map(preprocess_wav, wav_1_fpaths))}
-speaker_2_wavs = {speaker_2: list(map(preprocess_wav, wav_2_fpaths))}
-speaker_1_wavs.update(speaker_2_wavs) 
-speaker_wavs = speaker_1_wavs
-
+# Group the wavs per speaker and load them using the preprocessing function provided with 
+# resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
+# the wav to the correct sampling rate.
+speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
+                groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
+                        lambda wav_fpath: wav_fpath.parent.stem)}
 
 #embedding speaker
-spk_embeds_a = np.array([encoder.embed_speaker(wavs[:len(wavs) // 2]) \
-                         for wavs in speaker_wavs.values()])
-spk_embeds_b = np.array([encoder.embed_speaker(wavs[len(wavs) // 2:]) \
-                         for wavs in speaker_wavs.values()])
-spk_sim_matrix = np.inner(spk_embeds_a, spk_embeds_b)
+spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) \
+                         for speaker in speaker_wavs])
+spk_embeds = torch.from_numpy(spk_embeds)
+print(spk_embeds.size())
+sim_matrix = _model.similarity_matrix(spk_embeds)
+print(sim_matrix)
+sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
+print(sim_matrix)
+sim_matrix = normalize(sim_matrix, axis=1, norm='max')
+print(sim_matrix)
 
+## Draw the plots
+fix, axs = plt.subplots(1, 2, figsize=(8, 5))
 
-
-   
+labels_a = ["%s-A" % i for i in speaker_wavs.keys()]
+labels_b = ["%s-B" % i for i in speaker_wavs.keys()]
+mask = np.eye(len(sim_matrix), dtype=np.bool_)
+plot_similarity_matrix(sim_matrix, labels_a, labels_b, axs[0],
+                       "Cross-similarity between speakers")
+plot_histograms((sim_matrix[mask], sim_matrix[np.logical_not(mask)]), axs[1],
+                "Normalized histogram of similarity\nvalues between speakers")
+plt.show()

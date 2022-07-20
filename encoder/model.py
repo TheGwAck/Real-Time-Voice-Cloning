@@ -1,4 +1,4 @@
-from params_model import *
+from encoder.params_model import *
 from params_data import *
 from scipy.interpolate import interp1d
 from sklearn.metrics import roc_curve

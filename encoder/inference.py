@@ -1,8 +1,9 @@
-from params_data import *
+from encoder.params_data import *
 from model import SpeakerEncoder
-from audio import preprocess_wav   # We want to expose this function from here
+from encoder.audio import preprocess_wav   # We want to expose this function from here
 from matplotlib import cm
-import audio
+import matplotlib.pyplot as plt
+import encoder.audio as audio
 from pathlib import Path
 import numpy as np
 import torch
@@ -32,8 +33,8 @@ def load_model(weights_fpath: Path, device=None):
     checkpoint = torch.load(weights_fpath, _device)
     _model.load_state_dict(checkpoint["model_state"])
     _model.eval()
-    print("Loaded encoder \"%s\" trained to step %d" % (weights_fpath.name, checkpoint["step"]))
-
+    print("Loaded encoder \"%s\" trained to step %d" % (weights_fpath, checkpoint["step"]))
+    return _model
 
 def is_loaded():
     return _model is not None
@@ -108,7 +109,7 @@ def compute_partial_slices(n_samples, partial_utterance_n_frames=partials_n_fram
     return wav_slices, mel_slices
 
 
-def embed_utterance(wav, using_partials=True, return_partials=False, **kwargs):
+def embed_utterance(wav, using_partials=True, return_partials=True, **kwargs):
     """
     Computes an embedding for a single utterance.
 
@@ -151,17 +152,24 @@ def embed_utterance(wav, using_partials=True, return_partials=False, **kwargs):
     embed = raw_embed / np.linalg.norm(raw_embed, 2)
 
     if return_partials:
-        return embed, partial_embeds, wave_slices
+        return embed #, partial_embeds, wave_slices
     return embed
 
 
 def embed_speaker(wavs, **kwargs):
-     raw_embed = np.mean([self.embed_utterance(wav, return_partials=False, **kwargs) \
-                             for wav in wavs], axis=0)
-     return raw_embed / np.linalg.norm(raw_embed, 2)
+    raw_embed = [embed_utterance(wav, return_partials=True, **kwargs) \
+                        for wav in wavs]
+    return raw_embed  
+
+
+# raw_embed = np.mean([embed_utterance(wav, return_partials=True, **kwargs) \
+#                         for wav in wavs], axis=0)
+# return raw_embed / np.linalg.norm(raw_embed, 2)
+  
+
+
   
 def plot_embedding_as_heatmap(embed, ax=None, title="", shape=None, color_range=(0, 0.30)):
-    import matplotlib.pyplot as plt
     if ax is None:
         ax = plt.gca()
 

@@ -40,7 +40,7 @@ _model = encoder.load_model(model)
 #preprocessing wavs
 
 
-wav_fpaths = list(Path(path).glob("**/*.wav"))
+wav_fpaths = list(Path(path).glob("**/**/*.wav"))
 
 # Group the wavs per speaker and load them using the preprocessing function provided with 
 # resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
@@ -53,12 +53,10 @@ speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_
 spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) \
                          for speaker in speaker_wavs])
 spk_embeds = torch.from_numpy(spk_embeds)
-print(spk_embeds.size())
 sim_matrix = _model.similarity_matrix(spk_embeds)
-print(sim_matrix)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
-print(sim_matrix)
 sim_matrix = normalize(sim_matrix, axis=1, norm='max')
+
 print(sim_matrix)
 
 ## Draw the plots

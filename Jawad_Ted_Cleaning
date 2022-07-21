@@ -1,0 +1,27 @@
+import os
+from sphfile import SPHFile
+path = '/content/drive/MyDrive/Collabera_William/testing_datasets/TEDLIUM_release-3/Tedlium_Conversion_Testing/'  # Path of folder containing .sph files
+folder = os.fsencode(path)
+filenames = []
+folderpath = []
+outputfile = []
+for file in os.listdir(folder):
+    filename = os.fsdecode(file)
+    print(filename)
+    if filename.endswith( ('.sph') ): # whatever file types you're using...
+        filenames.append(filename)
+length = len(filenames) 
+for i in range(length):
+	fpath = os.path.join(path+filenames[i])
+	folderpath.append(fpath)
+	onlyname= filenames[i].split('.')
+	outpath = os.path.join("/content/drive/MyDrive/Collabera_William/testing_datasets/TEDLIUM_release-3/Tedlium_Conversion_Testing/"+onlyname[0]+".wav")	
+	outputfile.append(outpath)
+print(filenames[i])
+print(folderpath)
+print(outputfile)
+print(outpath)
+for i in range(length):
+	sph =SPHFile(folderpath[i])
+	print(sph.format)
+	sph.write_wav(outputfile[i], 10, 310 ) # Customize the period of time to crop

@@ -57,7 +57,7 @@ spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) \
 spk_embeds = torch.from_numpy(spk_embeds)
 sim_matrix = _model.similarity_matrix(spk_embeds)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
-sim_matrix = normalize(sim_matrix, axis=1, norm='l1')
+sim_matrix = normalize(sim_matrix, axis=1, norm='max')
 
 print(sim_matrix)
 

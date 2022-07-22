@@ -8,6 +8,7 @@ import pandas as pd
 from pathlib import Path
 from tqdm import tqdm
 from itertools import combinations
+import itertools
 
 from sklearn.preprocessing import normalize
 from encoder.audio import preprocess_wav
@@ -70,12 +71,33 @@ print(sim_matrix)
         -correct: binary value if match and same are equal --> 1 else 0
         add metrics for speaker-a-n and speaker-b-k
    '''     
-# def get_pandas(sim_matrix, speaker_wavs):
-#         speakers = [i for i in speaker_wavs.keys()]
-#         combos = list(combinations(len(speakers), 2))
-#         speaker_combos = [(speakers[i], speakers[j]) for (i,j) in combos]
+def create_panda_cols(x, sim_matrix, threshold):
+  similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
+  if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
+    same = 1
+  else:
+    same = 0
+  if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
+    correct = 1
+  else:
+    correct = 0
+  return (similarity, same, correct)
 
+def get_pandas(sim_matrix, speaker_wavs, threshold):
+        speakers = [i for i in speaker_wavs.keys()]
+        combos = list(combinations(range(len(speakers)), 2))
+        speaker_combo_indices = [((i,j),(j,i)) for (i,j) in combos]
+        speaker_combo_indices_redundant = list(itertools.chain(*speaker_combo_indices))
+        speakers_and_indices = [(i, speakers[i], j, speakers[j]) for (i,j) in speaker_combo_indices_redundant]
+        df = pd.DataFrame(speakers_and_indices, columns = ['speaker_a_indice','speaker_a', 'speaker_b_indice', 'speaker_b'])
+        df[['similarity','same', 'correct']] = df.apply(lambda x: create_panda_cols(x, sim_matrix, threshold), axis=1, result_type = 'expand')
+        return df
 
+threshold = 0.85
+df = get_pandas(sim_matrix, speaker_wavs, threshold)
+print('SIMILARITY ANALYSIS', df['similarity'].describe())
+print('CORRECT ANALYSIS', df['correct'].describe())
+print('CORRECT ANALYSIS v2', df.groupby('correct').mean())
 
 ## Draw the plots
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))

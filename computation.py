@@ -95,11 +95,8 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 
 threshold = 0.85
 df = get_pandas(sim_matrix, speaker_wavs, threshold)
-print('SIMILARITY ANALYSIS', df['similarity'].describe())
-print('CORRECT ANALYSIS', df['correct'].describe())
-print('CORRECT ANALYSIS v2', df.groupby('correct').mean())
-print(df)
-
+df[['similarity', 'correct']].groupby('correct').describe()
+df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity_df.pkl')
 # ## Draw the plots
 # fix, axs = plt.subplots(1, 2, figsize=(8, 5))
 

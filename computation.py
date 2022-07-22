@@ -77,10 +77,15 @@ def create_panda_cols(x, sim_matrix, threshold):
     same = 1
   else:
     same = 0
-  if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
-    correct = 1
+  if similarity >= threshold and same == 1:
+        correct = 'true positive'
+  elif similarity < threshold and same == 0:
+        correct = 'true negative'
+  elif similarity >= threshold and same == 0:
+        correct = 'false positive'
   else:
-    correct = 0
+        correct = 'false negative'
+
   return (similarity, same, correct)
 
 def get_pandas(sim_matrix, speaker_wavs, threshold):
@@ -96,7 +101,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 threshold = 0.85
 df = get_pandas(sim_matrix, speaker_wavs, threshold)
 df[['similarity', 'correct']].groupby('correct').describe()
-df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity_df.pkl')
+df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity_0.85_df.pkl')
 # ## Draw the plots
 # fix, axs = plt.subplots(1, 2, figsize=(8, 5))
 

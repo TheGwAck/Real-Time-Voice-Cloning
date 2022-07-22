@@ -98,15 +98,16 @@ df = get_pandas(sim_matrix, speaker_wavs, threshold)
 print('SIMILARITY ANALYSIS', df['similarity'].describe())
 print('CORRECT ANALYSIS', df['correct'].describe())
 print('CORRECT ANALYSIS v2', df.groupby('correct').mean())
+print(df)
 
-## Draw the plots
-fix, axs = plt.subplots(1, 2, figsize=(8, 5))
+# ## Draw the plots
+# fix, axs = plt.subplots(1, 2, figsize=(8, 5))
 
-labels_a = ["%s-A" % i for i in speaker_wavs.keys()]
-labels_b = ["%s-B" % i for i in speaker_wavs.keys()]
-mask = np.eye(len(sim_matrix), dtype=np.bool_)
-plot_similarity_matrix(sim_matrix, labels_a, labels_b, axs[0],
-                       "Cross-similarity between speakers")
-plot_histograms((sim_matrix[mask], sim_matrix[np.logical_not(mask)]), axs[1],
-                "Normalized histogram of similarity\nvalues between speakers")
-plt.show()
+# labels_a = ["%s-A" % i for i in speaker_wavs.keys()]
+# labels_b = ["%s-B" % i for i in speaker_wavs.keys()]
+# mask = np.eye(len(sim_matrix), dtype=np.bool_)
+# plot_similarity_matrix(sim_matrix, labels_a, labels_b, axs[0],
+#                        "Cross-similarity between speakers")
+# plot_histograms((sim_matrix[mask], sim_matrix[np.logical_not(mask)]), axs[1],
+#                 "Normalized histogram of similarity\nvalues between speakers")
+# plt.show()

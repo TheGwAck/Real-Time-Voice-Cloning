@@ -4,8 +4,10 @@ import numpy as np
 import soundfile as sf
 import torch
 import matplotlib.pyplot as plt
+import pandas as pd
 from pathlib import Path
 from tqdm import tqdm
+from itertools import combinations
 
 from sklearn.preprocessing import normalize
 from encoder.audio import preprocess_wav
@@ -55,9 +57,25 @@ spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) \
 spk_embeds = torch.from_numpy(spk_embeds)
 sim_matrix = _model.similarity_matrix(spk_embeds)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
-sim_matrix = normalize(sim_matrix, axis=1, norm='max')
+sim_matrix = normalize(sim_matrix, axis=1, norm='l1')
 
 print(sim_matrix)
+
+'''Create a pandas dataframe with columns:
+        -speaker-a-n
+        -speaker-b-k
+        -similarity_score
+        -match: binary value determining whether the similarity score yields a match determined by threshold
+        -same: binary value whether speaker-a and speaker-b are the same
+        -correct: binary value if match and same are equal --> 1 else 0
+        add metrics for speaker-a-n and speaker-b-k
+   '''     
+# def get_pandas(sim_matrix, speaker_wavs):
+#         speakers = [i for i in speaker_wavs.keys()]
+#         combos = list(combinations(len(speakers), 2))
+#         speaker_combos = [(speakers[i], speakers[j]) for (i,j) in combos]
+
+
 
 ## Draw the plots
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))

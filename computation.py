@@ -93,7 +93,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
         df[['similarity','same', 'correct']] = df.apply(lambda x: create_panda_cols(x, sim_matrix, threshold), axis=1, result_type = 'expand')
         return df
 
-threshold = 0.85
+threshold = 0.87
 df = get_pandas(sim_matrix, speaker_wavs, threshold)
 df[['similarity', 'correct']].groupby('correct').describe()
 df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity_df.pkl')

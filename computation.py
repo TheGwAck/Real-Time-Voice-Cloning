@@ -98,7 +98,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 thresholds =[0.80,0.82,0.84]
 for i, threshold in enumerate(thresholds):
         df = get_pandas(sim_matrix, speaker_wavs, threshold)
-        df[['similarity'+ str(i), 'correct'+ str(i)]].groupby('correct'+str(i).describe()
+        df[['similarity'+ str(i), 'correct'+ str(i)]].groupby('correct'+str(i).describe())
         df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')
 # ## Draw the plots
 # fix, axs = plt.subplots(1, 2, figsize=(8, 5))

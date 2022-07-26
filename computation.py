@@ -91,7 +91,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
         speaker_combo_indices_redundant = list(itertools.chain(*speaker_combo_indices))
         speakers_and_indices = [(i, speakers[i], j, speakers[j]) for (i,j) in speaker_combo_indices_redundant]
         df = pd.DataFrame(speakers_and_indices, columns = ['speaker_a_indice','speaker_a', 'speaker_b_indice', 'speaker_b'])
-        df[['similarity','same', 'correct']] = df.apply(lambda x: create_cols(x, sim_matrix, threshold), axis=1, result_type = 'expand')
+        df[['similarity','same', 'correct']] = df.apply(lambda x: create_panda_cols(x, sim_matrix, threshold), axis=1, result_type = 'expand')
        
         return df
 

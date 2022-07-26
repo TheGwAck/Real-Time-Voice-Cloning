@@ -95,7 +95,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
        
         return df
 
-thresholds =[0.88,0.885,0.891]
+thresholds =[0.87,0.75,0.85]
 for i, threshold in enumerate(thresholds):
         df = get_pandas(sim_matrix, speaker_wavs, threshold)
         #df[['similarity', 'correct']].groupby('correct').describe()

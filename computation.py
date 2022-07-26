@@ -77,11 +77,27 @@ def create_panda_cols(x, sim_matrix, threshold):
     same = 1
   else:
     same = 0
-  if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
-    correct = 1
+  if similarity >= threshold and same == 1:
+        correct = 'true positive'
+  elif similarity < threshold and same == 0:
+        correct = 'true negative'
+  elif similarity >= threshold and same == 0:
+        correct = 'false positive'
   else:
-    correct = 0
+        correct = 'false negative'
   return (similarity, same, correct)
+        
+        
+  #similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
+  #if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
+    #same = 1
+  #else:
+    #same = 0
+  #if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
+    #correct = 1
+  #else:
+    #correct = 0
+  #return (similarity, same, correct)
 
 def get_pandas(sim_matrix, speaker_wavs, threshold):
         

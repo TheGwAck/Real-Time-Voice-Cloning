@@ -71,17 +71,22 @@ print(sim_matrix)
         -correct: binary value if match and same are equal --> 1 else 0
         add metrics for speaker-a-n and speaker-b-k
    '''     
-def create_panda_cols(x, sim_matrix, threshold):  
-  similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
-  if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
-    same = 1
-  else:
-    same = 0
-  if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
-    correct = 1
-  else:
-    correct = 0
-  return (similarity, same, correct)
+def create_panda_cols(x, sim_matrix, threshold):
+        
+        
+        similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
+        
+        if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
+                
+                same = 1
+        else:
+                same = 0
+        if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
+                correct = 1
+        else:
+                correct = 0
+                
+        return (similarity, same, correct)
 
 def get_pandas(sim_matrix, speaker_wavs, threshold):
         

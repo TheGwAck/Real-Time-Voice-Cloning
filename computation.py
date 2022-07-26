@@ -83,7 +83,7 @@ def create_panda_cols(x, sim_matrix, threshold):
     correct = 0
   return (similarity, same, correct)
 
-def get_pandas(sim_matrix, speaker_wavs, thresholds):
+def get_pandas(sim_matrix, speaker_wavs, threshold):
         
         speakers = [i for i in speaker_wavs.keys()]
         combos = list(combinations(range(len(speakers)), 2))
@@ -91,17 +91,13 @@ def get_pandas(sim_matrix, speaker_wavs, thresholds):
         speaker_combo_indices_redundant = list(itertools.chain(*speaker_combo_indices))
         speakers_and_indices = [(i, speakers[i], j, speakers[j]) for (i,j) in speaker_combo_indices_redundant]
         df = pd.DataFrame(speakers_and_indices, columns = ['speaker_a_indice','speaker_a', 'speaker_b_indice', 'speaker_b'])
-        for i, threshold in enumerate(thresholds):
-                
-                df[['similarity'+str(i),'same'+str(i), 'correct'+str(i)]] = df.apply(lambda x: create_cols(x, sim_matrix, threshold), axis=1, result_type = 'expand')
+        df[['similarity','same', 'correct']] = df.apply(lambda x: create_cols(x, sim_matrix, threshold), axis=1, result_type = 'expand')
        
         return df
 
-thresholds = [0.80,0.85,0.90,0.83]
+threshold = 0.83
 df = get_pandas(sim_matrix, speaker_wavs, thresholds)
-for i in range(0,len(thresholds)):
-               
-               df[['similarity'+str(i), 'correct'+str(i)]].groupby('correct'+str(i)).describe()
+df[['similarity', 'correct']].groupby('correct').describe()
 df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity11_df.pkl')
 # ## Draw the plots
 # fix, axs = plt.subplots(1, 2, figsize=(8, 5))

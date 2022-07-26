@@ -74,17 +74,19 @@ print(sim_matrix)
 def create_panda_cols(x, sim_matrix, threshold):
   similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
   if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
-    same = 1
+                
+                
+                same = 1
   else:
-    same = 0
+                same = 0
   if similarity >= threshold and same == 1:
-        correct = 'true positive'
+                correct = 'true positive'
   elif similarity < threshold and same == 0:
-        correct = 'true negative'
+                correct = 'true negative'
   elif similarity >= threshold and same == 0:
-        correct = 'false positive'
+                correct = 'false positive'
   else:
-        correct = 'false negative'
+                correct = 'false negative'
   return (similarity, same, correct)
         
         

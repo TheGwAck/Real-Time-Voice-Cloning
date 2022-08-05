@@ -53,7 +53,7 @@ speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_
                         lambda wav_fpath: wav_fpath.parent.stem)}
 
 #embedding speaker
-spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) \
+spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker] print(speaker) \
                          for speaker in speaker_wavs])
 spk_embeds = torch.from_numpy(spk_embeds)
 sim_matrix = _model.similarity_matrix(spk_embeds)

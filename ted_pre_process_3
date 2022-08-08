@@ -1,0 +1,33 @@
+from genericpath import isdir
+import sys
+from pathlib import Path
+import pathlib
+from pydub import AudioSegment
+from pydub.utils import make_chunks
+import os
+path = Path('/content/drive/MyDrive/Collabera_Jawad/TEDLIUM_release-3/data/sph/')
+all_objs = list(path.glob('**/**/*.wav'))
+for file in all_objs:
+        myaudio = AudioSegment.from_file( file  , "wav") 
+        chunk_length_ms = 10000 # pydub calculates in millisec
+        chunks = make_chunks(myaudio, chunk_length_ms)
+        start =0
+        end = 5
+        for i in range(0,len(chunks)-1,5):
+            newpath = pathlib.PurePath(str(file.parents[0]) , str(file.stem)+"_" +str(i))
+            Path(newpath).mkdir(parents=True, exist_ok=True)
+            for c in range(start,end):
+              new2path =pathlib.PurePath(str(file.parents[0]) , str(file.stem)+"_"+ str(i),str(file.name))
+              print(new2path)
+              chunk_name = str(pathlib.PurePath(str(new2path)+"chunk{0}.wav".format(c)))
+              if c< len(chunks):
+                print(c)
+                chunks[c].export(chunk_name, format="wav")
+            start = start +5
+            end = end +5
+            print(end) 
+        os.unlink(file)
+
+     
+
+

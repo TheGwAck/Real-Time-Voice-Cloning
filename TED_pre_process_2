@@ -1,0 +1,23 @@
+from genericpath import isdir
+import sys
+from pathlib import Path
+import pathlib
+path = Path('/content/drive/MyDrive/Collabera_Jawad/TEDLIUM_release-3/legacy/test/sph')
+all_objs = path.glob('**/*')
+files = [f for f in all_objs if f.is_file()]
+
+for file in files:
+  temp = file.stem
+  x = temp.split('_')
+  pathtocheck= Path(file.parents[0],x[0])
+  print(pathtocheck)
+  
+  if pathtocheck in list(path.iterdir()):
+    print("jj")
+    file.rename(pathlib.PurePath(str(file.parents[0]),x[0], Path(file.name))) 
+  else:
+     newpath = pathlib.PurePath(str(file.parents[0]) , x[0])
+     Path(newpath).mkdir(parents=True, exist_ok=True)
+     file.rename(pathlib.PurePath(str(file.parents[0]),x[0], Path(file.name)))
+     
+  #### end of code for geetinng speaker folders#####

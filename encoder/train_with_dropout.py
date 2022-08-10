@@ -22,7 +22,8 @@ class SpeakerEncoder(nn.Module):
         self.linear = nn.Linear(in_features=model_hidden_size, 
                                 out_features=model_embedding_size).to(device)
         self.relu = torch.nn.ReLU().to(device)
-        
+        # new dropout line
+        self.dropout = nn.dropout(0.5)
         # Cosine similarity scaling (with fixed initial parameter values)
         self.similarity_weight = nn.Parameter(torch.tensor([10.])).to(loss_device)
         self.similarity_bias = nn.Parameter(torch.tensor([-5.])).to(loss_device)
@@ -53,7 +54,8 @@ class SpeakerEncoder(nn.Module):
         out, (hidden, cell) = self.lstm(utterances, hidden_init)
         
         # We take only the hidden state of the last layer
-        embeds_raw = self.relu(self.linear(hidden[-1]))
+        #make second chnage for dropout
+        embeds_raw = self.dropout(self.relu(self.linear(hidden[-1])))
         
         # L2-normalize it
         embeds = embeds_raw / (torch.norm(embeds_raw, dim=1, keepdim=True) + 1e-5)        

@@ -56,7 +56,7 @@ for wav_fpaths in chunks.reverse():
         speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
                         groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
                                 lambda wav_fpath: wav_fpath.parent.stem)}
-        print(speaker_wavs)
+        print("Index of speakers in chunk:", speaker_wavs)
         # save dictionary to pickle file
         with open('speaker_wavs.pickle', 'wb') as file:
                 pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)

@@ -45,8 +45,8 @@ _model = encoder.load_model(model)
 
 
 wav_fpathss = sorted(list(Path(path).glob("**/**/*.wav")))
-wav_fpathss = wav_fpathss[400:]
-chunks = [wav_fpathss[x:x+7] for x in range(0, len(wav_fpathss), 7)]
+# wav_fpathss = wav_fpathss[400:]
+chunks = [wav_fpathss[x:x+10] for x in range(0, len(wav_fpathss), 10)]
 
 for wav_fpaths in chunks:
         # Group the wavs per speaker and load them using the preprocessing function provided with 
@@ -62,18 +62,19 @@ for wav_fpaths in chunks:
 
         types = {}
         #embedding speaker
-        print([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
-        # spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs], dtype=np.float64)
-        # for speaker in speaker_wavs:
-        #         types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
-        # for type in types.keys():
-        #         if types[type] == "dtype('float32')":
-        #                 print(types[type])
-        # print(spk_embeds.dtype)
-        # spk_embeds = torch.from_numpy(spk_embeds)
-        # print(spk_embeds.size())
+        print(len([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs]))
+        spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs], dtype=np.float64)
+        print(spk_embeds.shape())
+        for speaker in speaker_wavs:
+                types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
+        for type in types.keys():
+                if types[type] == "dtype('float32')":
+                        print(types[type])
+        print(spk_embeds.dtype)
+        spk_embeds = torch.from_numpy(spk_embeds)
+        print(spk_embeds.size())
 
-        
+
         # sim_matrix = _model.similarity_matrix(spk_embeds)
         # sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
         # sim_matrix = normalize(sim_matrix, axis=1, norm='max')

@@ -51,11 +51,12 @@ print(wav_fpaths)
 speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
                 groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
                         lambda wav_fpath: wav_fpath.parent.stem)}
-print(speaker_wavs)
+types = {}
 #embedding speaker
-print("Hi: ", type(speaker_wavs))
 spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
-print("Hello: ", type(spk_embeds))
+for speaker in speaker_wavs:
+        types[speaker] = encoder.embed_speaker(speaker_wavs[speaker]).dtype
+print(types)
 spk_embeds = torch.from_numpy(spk_embeds)
 print(spk_embeds.size())
 sim_matrix = _model.similarity_matrix(spk_embeds)

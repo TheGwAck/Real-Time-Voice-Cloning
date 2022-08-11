@@ -55,7 +55,7 @@ types = {}
 #embedding speaker
 spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
 for speaker in speaker_wavs:
-        types[speaker] = encoder.embed_speaker(speaker_wavs[speaker]).dtype
+        types[speaker] = np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype
 print(types)
 spk_embeds = torch.from_numpy(spk_embeds)
 print(spk_embeds.size())

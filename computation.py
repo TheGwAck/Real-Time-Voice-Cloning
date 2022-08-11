@@ -62,7 +62,7 @@ for wav_fpaths in chunks:
 
         types = {}
         #embedding speaker
-        spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs], dtype=float)
+        spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs], dtype=object)
         for speaker in speaker_wavs:
                 types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
         for type in types.keys():

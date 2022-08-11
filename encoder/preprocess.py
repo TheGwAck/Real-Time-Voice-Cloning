@@ -71,9 +71,9 @@ def _preprocess_speaker(speaker_dir: Path, datasets_root: Path, out_dir: Path, s
 
     # Create an output directory with that name, as well as a txt file containing a
     # reference to each source file.
-    speaker_out_dir = out_dir.joinpath(speaker_name)
+    speaker_out_dir = Path(out_dir).joinpath(speaker_name)
     speaker_out_dir.mkdir(parents=True, exist_ok=True)
-    sources_fpath = speaker_out_dir.joinpath("_sources.txt")
+    sources_fpath = Path(speaker_out_dir).joinpath("_sources.txt")
 
     # There's a possibility that the preprocessing was interrupted earlier, check if
     # there already is a sources file.
@@ -107,7 +107,7 @@ def _preprocess_speaker(speaker_dir: Path, datasets_root: Path, out_dir: Path, s
         if len(frames) < partials_n_frames:
             continue
 
-        out_fpath = speaker_out_dir.joinpath(out_fname)
+        out_fpath = Path(speaker_out_dir).joinpath(out_fname)
         np.save(out_fpath, frames)
         sources_file.write(f"{out_fname},{wav_path}\n")
         audio_durs.append(len(wav) / sampling_rate)
@@ -152,7 +152,7 @@ def preprocess_voxceleb1(datasets_root: Path, out_dir: Path, skip_existing=False
         return
 
     # Get the contents of the meta file
-    with dataset_root.joinpath("vox1_meta.csv").open("r") as metafile:
+    with Path(dataset_root).joinpath("vox1_meta.csv").open("r") as metafile:
         metadata = [line.split("\t") for line in metafile][1:]
 
     # Select the ID and the nationality, filter out non-anglophone speakers
@@ -163,7 +163,7 @@ def preprocess_voxceleb1(datasets_root: Path, out_dir: Path, skip_existing=False
           (len(keep_speaker_ids), len(nationalities)))
 
     # Get the speaker directories for anglophone speakers only
-    speaker_dirs = dataset_root.joinpath("wav").glob("*")
+    speaker_dirs = Path(dataset_root).joinpath("wav").glob("*")
     speaker_dirs = [speaker_dir for speaker_dir in speaker_dirs if
                     speaker_dir.name in keep_speaker_ids]
     print("VoxCeleb1: found %d anglophone speakers on the disk, %d missing (this is normal)." %
@@ -182,7 +182,7 @@ def preprocess_voxceleb2(datasets_root: Path, out_dir: Path, skip_existing=False
 
     # Get the speaker directories
     # Preprocess all speakers
-    speaker_dirs = list(dataset_root.joinpath("dev", "aac").glob("*"))
+    speaker_dirs = list(Path(dataset_root).joinpath("dev", "aac").glob("*"))
     _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir, skip_existing, logger)
 
 def preprocess_tedlium(datasets_root: Path, dataset_name, out_dir: Path, skip_existing=False):

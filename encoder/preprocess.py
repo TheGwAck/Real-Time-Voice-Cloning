@@ -19,6 +19,7 @@ class DatasetLog:
     Registers metadata about the dataset in a text file.
     """
     def __init__(self, root, name):
+
         self.text_file = open(Path(root, "Log_%s.txt" % name.replace("/", "_")), "w")
         self.sample_data = dict()
 
@@ -108,7 +109,7 @@ def _preprocess_speaker(speaker_dir: Path, datasets_root: Path, out_dir: Path, s
 
         out_fpath = speaker_out_dir.joinpath(out_fname)
         np.save(out_fpath, frames)
-        sources_file.write(f"{out_fnames},{wav_path}\n")
+        sources_file.write(f"{out_fname},{wav_path}\n")
         audio_durs.append(len(wav) / sampling_rate)
 
     sources_file.close()
@@ -193,7 +194,7 @@ def preprocess_tedlium(datasets_root: Path, dataset_name, out_dir: Path, skip_ex
 
     # Preprocess all speakers
     speaker_dirs = sorted(list(dataset_root.glob("*")))
-    _preprocess_speaker_dirs(speaker_dirs, dataset_name, dataset_root, out_dir, "wav",
+    _preprocess_speaker_dirs(speaker_dirs, dataset_name, dataset_root, out_dir,
                              skip_existing, logger)
 
 out_dir = sys.argv[3]

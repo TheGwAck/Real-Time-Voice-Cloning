@@ -47,9 +47,9 @@ _model = encoder.load_model(model)
 wav_fpathss = sorted(list(Path(path).glob("**/**/*.wav")))
 
 chunks = [wav_fpathss[x:x+1549] for x in range(0, len(wav_fpathss), 1549)]
-
+half = len(wav_fpathss)/2
 print(chunks)
-for wav_fpaths in chunks[len(wav_fpathss)/2:]:
+for wav_fpaths in chunks[half:]:
         # Group the wavs per speaker and load them using the preprocessing function provided with 
         # resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
         # the wav to the correct sampling rate.

@@ -44,7 +44,7 @@ _model = encoder.load_model(model)
 
 
 wav_fpaths = list(Path(path).glob("**/**/*.wav"))
-
+print(wav_fpaths)
 # Group the wavs per speaker and load them using the preprocessing function provided with 
 # resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
 # the wav to the correct sampling rate.

@@ -9,6 +9,7 @@ from tqdm import tqdm
 from encoder import audio
 from encoder.config import librispeech_datasets, anglophone_nationalites
 from encoder.params_data import *
+import sys
 
 
 _AUDIO_EXTENSIONS = ("wav", "flac", "m4a", "mp3")
@@ -197,3 +198,7 @@ def preprocess_tedlium(out_dir: Path, skip_existing=False):
     speaker_dirs = sorted(list(dataset_root.glob("*")))
     _preprocess_speaker_dirs(speaker_dirs, dataset_name, dataset_root, out_dir, "wav",
                              skip_existing, logger)
+
+out_dir = sys.argv[1]
+
+preprocess_tedlium(out_dir)

@@ -197,6 +197,6 @@ def preprocess_tedlium(datasets_root: Path, dataset_name, out_dir: Path, skip_ex
                              skip_existing, logger)
 
 out_dir = sys.argv[3]
-datasets_root = sys.arg[1]
-dataset_name = sys.arg[2]
+datasets_root = sys.argv[1]
+dataset_name = sys.argv[2]
 preprocess_tedlium(datasets_root, dataset_name, out_dir)

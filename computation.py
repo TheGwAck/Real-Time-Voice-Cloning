@@ -51,7 +51,7 @@ wav_fpaths = list(Path(path).glob("**/**/*.wav"))
 speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
                 groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
                         lambda wav_fpath: wav_fpath.parent.stem)}
-
+print(speaker_wavs)
 #embedding speaker
 print("Hi: ", type(speaker_wavs))
 spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])

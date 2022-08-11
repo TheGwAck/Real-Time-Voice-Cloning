@@ -49,14 +49,14 @@ wav_fpathss = sorted(list(Path(path).glob("**/**/*.wav")))
 chunks = [wav_fpathss[x:x+1549] for x in range(0, len(wav_fpathss), 1549)]
 
 print(chunks)
-for wav_fpaths in chunks:
+for wav_fpaths in chunks.reverse():
         # Group the wavs per speaker and load them using the preprocessing function provided with 
         # resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
         # the wav to the correct sampling rate.
         speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
                         groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
                                 lambda wav_fpath: wav_fpath.parent.stem)}
-
+        print(speaker_wavs)
         # save dictionary to pickle file
         with open('speaker_wavs.pickle', 'wb') as file:
                 pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)

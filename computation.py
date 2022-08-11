@@ -62,15 +62,18 @@ for wav_fpaths in chunks:
 
         types = {}
         #embedding speaker
-        spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs], dtype=np.float64)
-        for speaker in speaker_wavs:
-                types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
-        for type in types.keys():
-                if types[type] == "dtype('float32')":
-                        print(types[type])
-        print(spk_embeds.dtype)
-        spk_embeds = torch.from_numpy(spk_embeds)
-        print(spk_embeds.size())
+        print([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
+        # spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs], dtype=np.float64)
+        # for speaker in speaker_wavs:
+        #         types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
+        # for type in types.keys():
+        #         if types[type] == "dtype('float32')":
+        #                 print(types[type])
+        # print(spk_embeds.dtype)
+        # spk_embeds = torch.from_numpy(spk_embeds)
+        # print(spk_embeds.size())
+
+        
         # sim_matrix = _model.similarity_matrix(spk_embeds)
         # sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
         # sim_matrix = normalize(sim_matrix, axis=1, norm='max')

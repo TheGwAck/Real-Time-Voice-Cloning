@@ -49,7 +49,7 @@ wav_fpathss = sorted(list(Path(path).glob("**/**/*.wav")))
 chunks = [wav_fpathss[x:x+1549] for x in range(0, len(wav_fpathss), 1549)]
 
 print(chunks)
-for wav_fpaths in chunks:
+for wav_fpaths in chunks[len(wav_fpathss)/2:]:
         # Group the wavs per speaker and load them using the preprocessing function provided with 
         # resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
         # the wav to the correct sampling rate.
@@ -58,8 +58,8 @@ for wav_fpaths in chunks:
                                 lambda wav_fpath: wav_fpath.parent.stem)}
         print("Index of speakers in chunk:", speaker_wavs)
         # save dictionary to pickle file
-        with open('speaker_wavs.pickle', 'wb') as file:
-                pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
+        # with open('speaker_wavs.pickle', 'wb') as file:
+        #         pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
         types = {}
         #embedding speaker
@@ -70,12 +70,11 @@ for wav_fpaths in chunks:
                 if types[type] == "dtype('float32')":
                         print(types[type])
         print(spk_embeds.dtype)
-        spk_embeds=np.vstack(spk_embeds).astype(np.float)
         spk_embeds = torch.from_numpy(spk_embeds)
         print(spk_embeds.size())
-        sim_matrix = _model.similarity_matrix(spk_embeds)
-        sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
-        sim_matrix = normalize(sim_matrix, axis=1, norm='max')
+        # sim_matrix = _model.similarity_matrix(spk_embeds)
+        # sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
+        # sim_matrix = normalize(sim_matrix, axis=1, norm='max')
 
 '''Create a pandas dataframe with columns:
         -speaker-a-n

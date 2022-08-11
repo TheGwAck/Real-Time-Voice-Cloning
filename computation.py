@@ -45,8 +45,8 @@ _model = encoder.load_model(model)
 
 
 wav_fpathss = sorted(list(Path(path).glob("**/**/*.wav")))
-
-chunks = [wav_fpathss[x:x+100] for x in range(0, len(wav_fpathss), 100)]
+wav_fpathss = wav_fpathss[400:]
+chunks = [wav_fpathss[x:x+7] for x in range(0, len(wav_fpathss), 7)]
 
 for wav_fpaths in chunks:
         # Group the wavs per speaker and load them using the preprocessing function provided with 

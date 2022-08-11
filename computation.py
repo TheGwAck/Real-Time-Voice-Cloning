@@ -53,10 +53,14 @@ speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_
                         lambda wav_fpath: wav_fpath.parent.stem)}
 types = {}
 #embedding speaker
-spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
+spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
 for speaker in speaker_wavs:
-        types[speaker] = np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype
-print(types)
+        types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
+for type in types.keys():
+        if types[type] == "dtype('float32')":
+                print(types[type])
+print(spk_embeds.dtype)
+spk_embeds=np.vstack(spk_embeds).astype(np.float)
 spk_embeds = torch.from_numpy(spk_embeds)
 print(spk_embeds.size())
 sim_matrix = _model.similarity_matrix(spk_embeds)

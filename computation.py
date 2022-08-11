@@ -85,52 +85,52 @@ for wav_fpaths in chunks[9298:]:
         -correct: binary value if match and same are equal --> 1 else 0
         add metrics for speaker-a-n and speaker-b-k
    '''     
-def create_panda_cols(x, sim_matrix, threshold):
+# def create_panda_cols(x, sim_matrix, threshold):
         
-        '''
-        similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
-        if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
-                same = 1
-        else:
-                same = 0
-        if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
-                correct = 1
-        else:
-                correct = 0  
-        return (similarity, same, correct)'''
+#         '''
+#         similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
+#         if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
+#                 same = 1
+#         else:
+#                 same = 0
+#         if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
+#                 correct = 1
+#         else:
+#                 correct = 0  
+#         return (similarity, same, correct)'''
  
-        similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
-        if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
-                same = 1
-        else:
-                same = 0
-        if similarity >= threshold and same == 1:
-                correct = 'true positive'
-        elif similarity < threshold and same == 0:
-                correct = 'true negative'
-        elif similarity >= threshold and same == 0:
-                correct = 'false positive'
-        else:
-                correct = 'false negative'
-        return (similarity, same, correct)
+#         similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
+#         if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
+#                 same = 1
+#         else:
+#                 same = 0
+#         if similarity >= threshold and same == 1:
+#                 correct = 'true positive'
+#         elif similarity < threshold and same == 0:
+#                 correct = 'true negative'
+#         elif similarity >= threshold and same == 0:
+#                 correct = 'false positive'
+#         else:
+#                 correct = 'false negative'
+#         return (similarity, same, correct)
 
-def get_pandas(sim_matrix, speaker_wavs, threshold):
+# def get_pandas(sim_matrix, speaker_wavs, threshold):
         
-        speakers = [i for i in speaker_wavs.keys()]
-        combos = list(combinations(range(len(speakers)), 2))
-        speaker_combo_indices = [((i,j),(j,i)) for (i,j) in combos]
-        speaker_combo_indices_redundant = list(itertools.chain(*speaker_combo_indices))
-        speakers_and_indices = [(i, speakers[i], j, speakers[j]) for (i,j) in speaker_combo_indices_redundant]
-        df = pd.DataFrame(speakers_and_indices, columns = ['speaker_a_indice','speaker_a', 'speaker_b_indice', 'speaker_b'])
-        df[['similarity','same', 'correct']] = df.apply(lambda x: create_panda_cols(x, sim_matrix, threshold), axis=1, result_type = 'expand')
+#         speakers = [i for i in speaker_wavs.keys()]
+#         combos = list(combinations(range(len(speakers)), 2))
+#         speaker_combo_indices = [((i,j),(j,i)) for (i,j) in combos]
+#         speaker_combo_indices_redundant = list(itertools.chain(*speaker_combo_indices))
+#         speakers_and_indices = [(i, speakers[i], j, speakers[j]) for (i,j) in speaker_combo_indices_redundant]
+#         df = pd.DataFrame(speakers_and_indices, columns = ['speaker_a_indice','speaker_a', 'speaker_b_indice', 'speaker_b'])
+#         df[['similarity','same', 'correct']] = df.apply(lambda x: create_panda_cols(x, sim_matrix, threshold), axis=1, result_type = 'expand')
        
-        return df
+#         return df
 
-thresholds =[0.2,0.88,0.886]
-for i, threshold in enumerate(thresholds):
-        df = get_pandas(sim_matrix, speaker_wavs, threshold)
-        #df[['similarity', 'correct']].groupby('correct').describe()
-        df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')
+# thresholds =[0.2,0.88,0.886]
+# for i, threshold in enumerate(thresholds):
+#         df = get_pandas(sim_matrix, speaker_wavs, threshold)
+#         #df[['similarity', 'correct']].groupby('correct').describe()
+#         df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')
 # ## Draw the plots
 # fix, axs = plt.subplots(1, 2, figsize=(8, 5))
 

@@ -46,7 +46,7 @@ _model = encoder.load_model(model)
 
 wav_fpathss = sorted(list(Path(path).glob("**/**/*.wav")))
 
-chunks = [wav_fpathss[x:x+1549] for x in range(0, len(wav_fpathss), 1549)]
+chunks = [wav_fpathss[x:x+100] for x in range(0, len(wav_fpathss), 100)]
 
 for wav_fpaths in chunks:
         # Group the wavs per speaker and load them using the preprocessing function provided with 
@@ -55,7 +55,7 @@ for wav_fpaths in chunks:
         speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
                         groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
                                 lambda wav_fpath: wav_fpath.parent.stem)}
-        print("Index of speakers in chunk:", speaker_wavs)
+        print("Index of speakers in chunk:", speaker_wavs.keys())
         # save dictionary to pickle file
         # with open('speaker_wavs.pickle', 'wb') as file:
         #         pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)

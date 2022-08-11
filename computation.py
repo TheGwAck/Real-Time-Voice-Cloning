@@ -44,34 +44,38 @@ _model = encoder.load_model(model)
 #preprocessing wavs
 
 
-wav_fpaths = list(Path(path).glob("**/**/*.wav"))
-print(wav_fpaths)
-# Group the wavs per speaker and load them using the preprocessing function provided with 
-# resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
-# the wav to the correct sampling rate.
-speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
-                groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
-                        lambda wav_fpath: wav_fpath.parent.stem)}
+wav_fpathss = sorted(list(Path(path).glob("**/**/*.wav")))
 
-# save dictionary to pickle file
-with open('speaker_wavs.pickle', 'wb') as file:
-    pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
+chunks = [wav_fpathss[x:x+1549] for x in range(0, len(wav_fpathss), 1549)]
 
-types = {}
-#embedding speaker
-spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
-for speaker in speaker_wavs:
-        types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
-for type in types.keys():
-        if types[type] == "dtype('float32')":
-                print(types[type])
-print(spk_embeds.dtype)
-spk_embeds=np.vstack(spk_embeds).astype(np.float)
-spk_embeds = torch.from_numpy(spk_embeds)
-print(spk_embeds.size())
-sim_matrix = _model.similarity_matrix(spk_embeds)
-sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
-sim_matrix = normalize(sim_matrix, axis=1, norm='max')
+print(chunks)
+for wav_fpaths in chunks:
+        # Group the wavs per speaker and load them using the preprocessing function provided with 
+        # resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
+        # the wav to the correct sampling rate.
+        speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
+                        groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
+                                lambda wav_fpath: wav_fpath.parent.stem)}
+
+        # save dictionary to pickle file
+        with open('speaker_wavs.pickle', 'wb') as file:
+                pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+        types = {}
+        #embedding speaker
+        spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
+        for speaker in speaker_wavs:
+                types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
+        for type in types.keys():
+                if types[type] == "dtype('float32')":
+                        print(types[type])
+        print(spk_embeds.dtype)
+        spk_embeds=np.vstack(spk_embeds).astype(np.float)
+        spk_embeds = torch.from_numpy(spk_embeds)
+        print(spk_embeds.size())
+        sim_matrix = _model.similarity_matrix(spk_embeds)
+        sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
+        sim_matrix = normalize(sim_matrix, axis=1, norm='max')
 
 '''Create a pandas dataframe with columns:
         -speaker-a-n

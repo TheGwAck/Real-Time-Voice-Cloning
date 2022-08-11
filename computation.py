@@ -56,9 +56,7 @@ types = {}
 spk_embeds= np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
 for speaker in speaker_wavs:
         types[speaker] = np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype
-for type in types.keys():        
-        if 'float32' in types[type]:
-                print(type)
+print(types)
 spk_embeds = torch.from_numpy(spk_embeds)
 print(spk_embeds.size())
 sim_matrix = _model.similarity_matrix(spk_embeds)

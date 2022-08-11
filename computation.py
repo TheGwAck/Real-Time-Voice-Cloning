@@ -18,6 +18,7 @@ from similarity import plot_similarity_matrix, plot_histograms
 
 from utils.argutils import print_args
 from itertools import groupby
+import pickle
 
 model = sys.argv[1]
 path = sys.argv[2]
@@ -51,6 +52,11 @@ print(wav_fpaths)
 speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
                 groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
                         lambda wav_fpath: wav_fpath.parent.stem)}
+
+# save dictionary to pickle file
+with open('speaker_wavs.pickle', 'wb') as file:
+    pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
+
 types = {}
 #embedding speaker
 spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])

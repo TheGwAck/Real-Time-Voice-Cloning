@@ -22,6 +22,7 @@ class SpeakerEncoder(nn.Module):
         self.linear = nn.Linear(in_features=model_hidden_size, 
                                 out_features=model_embedding_size).to(device)
         self.relu = torch.nn.ReLU().to(device)
+        # self.relu = torch.nn.Tanh().to(device)
         
         # Cosine similarity scaling (with fixed initial parameter values)
         self.similarity_weight = nn.Parameter(torch.tensor([10.])).to(loss_device)

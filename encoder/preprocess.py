@@ -184,11 +184,8 @@ def preprocess_voxceleb2(datasets_root: Path, out_dir: Path, skip_existing=False
     speaker_dirs = list(dataset_root.joinpath("dev", "aac").glob("*"))
     _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir, skip_existing, logger)
 
-def preprocess_tedlium(out_dir: Path, skip_existing=False):
-    # simple dataset path
-    dataset_name = "preprocessed_TED2/train"
-    # used to be arg!!!!!!!!!!!!!!!!!1
-    datasets_root = Path('/content/drive/MyDrive/Collabera_William')
+def preprocess_tedlium(datasets_root: Path, dataset_name, out_dir: Path, skip_existing=False):
+    
     # Initialize the preprocessing
     dataset_root, logger = _init_preprocess_dataset(dataset_name, datasets_root, out_dir)
     if not dataset_root:
@@ -199,6 +196,7 @@ def preprocess_tedlium(out_dir: Path, skip_existing=False):
     _preprocess_speaker_dirs(speaker_dirs, dataset_name, dataset_root, out_dir, "wav",
                              skip_existing, logger)
 
-out_dir = sys.argv[1]
-
-preprocess_tedlium(out_dir)
+out_dir = sys.argv[3]
+datasets_root = sys.arg[1]
+dataset_name = sys.arg[2]
+preprocess_tedlium(datasets_root, dataset_name, out_dir)

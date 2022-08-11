@@ -65,12 +65,12 @@ def _init_preprocess_dataset(dataset_name, datasets_root, out_dir) -> (Path, Dat
 
 def _preprocess_speaker(speaker_dir: Path, datasets_root: Path, out_dir: Path, skip_existing: bool):
     # Give a name to the speaker that includes its dataset
-    speaker_name = "_".join(speaker_dir.relative_to(datasets_root).parts)
+    speaker_name = speaker_dir.relative_to(datasets_root).stem
 
     # Create an output directory with that name, as well as a txt file containing a
     # reference to each source file.
     speaker_out_dir = out_dir.joinpath(speaker_name)
-    speaker_out_dir.mkdir(exist_ok=True)
+    speaker_out_dir.mkdir(parents=True, exist_ok=True)
     sources_fpath = speaker_out_dir.joinpath("_sources.txt")
 
     # There's a possibility that the preprocessing was interrupted earlier, check if
@@ -86,29 +86,29 @@ def _preprocess_speaker(speaker_dir: Path, datasets_root: Path, out_dir: Path, s
 
     # Gather all audio files for that speaker recursively
     sources_file = sources_fpath.open("a" if skip_existing else "w")
-    audio_durs = []
-    for extension in _AUDIO_EXTENSIONS:
-        for in_fpath in speaker_dir.glob("**/*.%s" % extension):
-            # Check if the target output file already exists
-            out_fname = "_".join(in_fpath.relative_to(speaker_dir).parts)
-            out_fname = out_fname.replace(".%s" % extension, ".npy")
-            if skip_existing and out_fname in existing_fnames:
-                continue
+    audio_durs = [] #audio duration
+    wav_paths = list(speaker_dir.glob("**/*.wav"))
+    for wav_path in wav_paths:
+        # Check if the target output file already exists
+        out_fname = wav_path.stem
+        out_fname = out_fname.replace(".wav", ".npy")
+        if skip_existing and out_fname in existing_fnames:
+            continue
 
-            # Load and preprocess the waveform
-            wav = audio.preprocess_wav(in_fpath)
-            if len(wav) == 0:
-                continue
+        # Load and preprocess the waveform
+        wav = audio.preprocess_wav(wav_path)
+        if len(wav) == 0:
+            continue
 
-            # Create the mel spectrogram, discard those that are too short
-            frames = audio.wav_to_mel_spectrogram(wav)
-            if len(frames) < partials_n_frames:
-                continue
+        # Create the mel spectrogram, discard those that are too short
+        frames = audio.wav_to_mel_spectrogram(wav)
+        if len(frames) < partials_n_frames:
+            continue
 
-            out_fpath = speaker_out_dir.joinpath(out_fname)
-            np.save(out_fpath, frames)
-            sources_file.write("%s,%s\n" % (out_fname, in_fpath))
-            audio_durs.append(len(wav) / sampling_rate)
+        out_fpath = speaker_out_dir.joinpath(out_fname)
+        np.save(out_fpath, frames)
+        sources_file.write(f"{out_fnames},{wav_path}\n")
+        audio_durs.append(len(wav) / sampling_rate)
 
     sources_file.close()
 
@@ -182,3 +182,18 @@ def preprocess_voxceleb2(datasets_root: Path, out_dir: Path, skip_existing=False
     # Preprocess all speakers
     speaker_dirs = list(dataset_root.joinpath("dev", "aac").glob("*"))
     _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir, skip_existing, logger)
+
+def preprocess_tedlium(out_dir: Path, skip_existing=False):
+    # simple dataset path
+    dataset_name = "preprocessed_TED2/train"
+    # used to be arg!!!!!!!!!!!!!!!!!1
+    datasets_root = Path('/content/drive/MyDrive/Collabera_William')
+    # Initialize the preprocessing
+    dataset_root, logger = _init_preprocess_dataset(dataset_name, datasets_root, out_dir)
+    if not dataset_root:
+        return
+
+    # Preprocess all speakers
+    speaker_dirs = sorted(list(dataset_root.glob("*")))
+    _preprocess_speaker_dirs(speaker_dirs, dataset_name, dataset_root, out_dir, "wav",
+                             skip_existing, logger)

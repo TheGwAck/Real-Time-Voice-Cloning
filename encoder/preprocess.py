@@ -122,7 +122,7 @@ def _preprocess_speaker_dirs(speaker_dirs, dataset_name, datasets_root, out_dir,
 
     # Process the utterances for each speaker
     work_fn = partial(_preprocess_speaker, datasets_root=datasets_root, out_dir=out_dir, skip_existing=skip_existing)
-    with Pool(4) as pool:
+    with Pool(8) as pool:
         tasks = pool.imap(work_fn, speaker_dirs)
         for sample_durs in tqdm(tasks, dataset_name, len(speaker_dirs), unit="speakers"):
             for sample_dur in sample_durs:

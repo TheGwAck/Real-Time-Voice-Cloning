@@ -23,7 +23,7 @@ import pickle
 model = sys.argv[1]
 path = sys.argv[2]
 threshold = float(sys.argv[3])
-name = sys.argv[4]
+pkl_name = sys.argv[4]
 
 if torch.cuda.is_available():
         device_id = torch.cuda.current_device()
@@ -132,7 +132,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
         return df
 
 df = get_pandas(sim_matrix, speaker_wavs, threshold)
-df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(pkl_name) +'.pkl')
+df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
 # thresholds =[0.2,0.88,0.886]
 # for i, threshold in enumerate(thresholds):
 #         df = get_pandas(sim_matrix, speaker_wavs, threshold)

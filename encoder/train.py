@@ -22,8 +22,8 @@ def train(run_id: str, clean_data_root: Path, models_dir: Path, umap_every: int,
     dataset = SpeakerVerificationDataset(clean_data_root)
     loader = SpeakerVerificationDataLoader(
         dataset,
-        speakers_per_batch,
-        utterances_per_speaker,
+        speakers_per_batch, #see encoder/params_model.py
+        utterances_per_speaker, #see encoder/params_model.py
         num_workers=4,
     )
 

@@ -55,15 +55,15 @@ wav_fpaths = sorted(list(Path(path).glob("**/**/*.wav")))
 speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
                 groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
                         lambda wav_fpath: wav_fpath.parent.stem)}
-print("Index of speakers in chunk:", speaker_wavs.keys())
+
 # save dictionary to pickle file
 # with open('speaker_wavs.pickle', 'wb') as file:
 #         pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-types = {}
+# types = {}
 #embedding speaker
 # print(len([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs]))
-spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs], dtype=np.float64)
+spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
 print(spk_embeds.shape)
 # for speaker in speaker_wavs:
 #         types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
@@ -129,11 +129,14 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
        
         return df
 
-thresholds =[0.2,0.88,0.886]
-for i, threshold in enumerate(thresholds):
-        df = get_pandas(sim_matrix, speaker_wavs, threshold)
-        #df[['similarity', 'correct']].groupby('correct').describe()
-        df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')
+threshold = 0.82
+df = get_pandas(sim_matrix, speaker_wavs, threshold)
+df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + threshold +'.pkl')
+# thresholds =[0.2,0.88,0.886]
+# for i, threshold in enumerate(thresholds):
+#         df = get_pandas(sim_matrix, speaker_wavs, threshold)
+#         #df[['similarity', 'correct']].groupby('correct').describe()
+#         df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')
 ## Draw the plots
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))
 

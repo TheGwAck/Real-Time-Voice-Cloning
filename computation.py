@@ -22,7 +22,7 @@ import pickle
 
 model = sys.argv[1]
 path = sys.argv[2]
-threshold = str(sys.argv[3])
+threshold = int(sys.argv[3])
 name = sys.argv[4]
 
 if torch.cuda.is_available():

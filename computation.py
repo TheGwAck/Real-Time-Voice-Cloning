@@ -131,7 +131,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 
 threshold = 0.82
 df = get_pandas(sim_matrix, speaker_wavs, threshold)
-df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + threshold +'.pkl')
+df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(threshold) +'.pkl')
 # thresholds =[0.2,0.88,0.886]
 # for i, threshold in enumerate(thresholds):
 #         df = get_pandas(sim_matrix, speaker_wavs, threshold)

@@ -44,23 +44,24 @@ print("Preparing the encoder")
 
 _model = encoder.load_model(model)
 #preprocessing wavs
+pkl_fpath = f'/content/drive/MyDrive/Collabera_William/speaker_wavs_{pkl_name}.pkl'
+if Path(pkl_fpath).exists():
+        print(f'Audio files being loaded form {pkl_fpath}')
+        speaker_wavs = pd.read_pickle(pkl_fpath)
+else:
 
+        wav_fpaths = sorted(list(Path(path).glob("**/**/*.wav")))
 
-wav_fpaths = sorted(list(Path(path).glob("**/**/*.wav")))
-# wav_fpathss = wav_fpathss[400:]
-# chunks = [wav_fpathss[x:x+10] for x in range(0, len(wav_fpathss), 10)]
+        # Group the wavs per speaker and load them using the preprocessing function provided with 
+        # resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
+        # the wav to the correct sampling rate.
+        speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
+                        groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
+                                lambda wav_fpath: wav_fpath.parent.stem)}
 
-# for wav_fpaths in chunks:
-# Group the wavs per speaker and load them using the preprocessing function provided with 
-# resemblyzer to load wavs in memory. It normalizes the volume, trims long silences and resamples 
-# the wav to the correct sampling rate.
-speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_fpaths in
-                groupby(tqdm(wav_fpaths, "Preprocessing wavs", len(wav_fpaths), unit="wavs"), 
-                        lambda wav_fpath: wav_fpath.parent.stem)}
-
-# save dictionary to pickle file
-with open('speaker_wavs.pkl', 'wb') as file:
-        pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
+        # save dictionary to pickle file
+        with open(pkl_fpath, 'wb') as file:
+                pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 # embedding speaker
 spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs)])
@@ -109,7 +110,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 
 # df = get_pandas(sim_matrix, speaker_wavs, threshold)
 # df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
-thresholds = range(0.8,0.96,0.01)
+thresholds = np.arange(0.8,0.96,0.01)
 for i, threshold in enumerate(thresholds):
         df = get_pandas(sim_matrix, speaker_wavs, threshold)
         df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')

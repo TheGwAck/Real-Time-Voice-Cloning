@@ -70,8 +70,20 @@ else:
                 pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 # embedding speaker
-spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs, "Embedding", len(speaker_wavs), unit='speaker')])
-spk_embeds = torch.from_numpy(spk_embeds)
+embedd_fpath = f'/content/drive/MyDrive/Collabera_William/embeddings/embeddings_{pkl_name}.pkl'
+if not Path(embedd_fpath).parents[0].exists():
+        Path(embedd_fpath).parents[0].mkdir(parents=True)
+
+if Path(embedd_fpath).exists():
+        print(f'Embeddings being loaded from {embedd_fpath}')
+        speaker_wavs = pd.read_pickle(embedd_fpath)
+else:
+        spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs, "Embeddings", len(speaker_wavs), unit='speaker')])
+        spk_embeds = torch.from_numpy(spk_embeds)
+        with open(embedd_fpath, 'wb') as file:
+                pickle.dump(spk_embeds, file, protocol=pickle.HIGHEST_PROTOCOL)
+
+
 sim_matrix = _model.similarity_matrix(spk_embeds)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
 sim_matrix = normalize(sim_matrix, axis=1, norm='max')

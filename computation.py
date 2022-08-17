@@ -22,8 +22,9 @@ import pickle
 
 model = sys.argv[1]
 path = sys.argv[2]
-threshold = float(sys.argv[3])
-pkl_name = sys.argv[4]
+pkl_name = sys.argv[3]
+threshold_min = float(sys.argv[4])
+threshold_max = float(sys.argv[5])
 
 if torch.cuda.is_available():
         device_id = torch.cuda.current_device()
@@ -46,7 +47,7 @@ _model = encoder.load_model(model)
 #preprocessing wavs
 pkl_fpath = f'/content/drive/MyDrive/Collabera_William/speaker_wavs_{pkl_name}.pkl'
 if Path(pkl_fpath).exists():
-        print(f'Audio files being loaded form {pkl_fpath}')
+        print(f'Audio files being loaded from {pkl_fpath}')
         speaker_wavs = pd.read_pickle(pkl_fpath)
 else:
 
@@ -110,10 +111,13 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 
 # df = get_pandas(sim_matrix, speaker_wavs, threshold)
 # df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
-thresholds = np.arange(0.8,0.96,0.01)
-for i, threshold in enumerate(thresholds):
-        df = get_pandas(sim_matrix, speaker_wavs, threshold)
-        df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')
+if threshold_max:
+        thresholds = np.arange(threshold_min,0.96,0.01)
+else: 
+        thresholds = threshold_min
+for thresh in thresholds:
+        df = get_pandas(sim_matrix, speaker_wavs, thresh)
+        df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(thresh)+'.pkl')
 
 # Draw the plots
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))

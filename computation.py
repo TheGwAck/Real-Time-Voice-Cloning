@@ -126,7 +126,7 @@ if len(sys.argv) > 5:
         thresholds = np.arange(threshold_min,threshold_max, threshold_step)
         print(f'Creating pandas similarity tables with thresholds from {threshold_min} to {threshold_max} with a step of {threshold_step}.')
 else: 
-        thresholds = threshold_min
+        thresholds = [threshold_min]
         print(f'Creating pandas similarity table with threshold of {threshold_min}.')
 
 for thresh in thresholds:

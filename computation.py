@@ -48,8 +48,8 @@ print("Preparing the encoder")
 _model = encoder.load_model(model)
 #preprocessing wavs
 pkl_fpath = f'/content/drive/MyDrive/Collabera_William/computation_wavs/speaker_wavs_{pkl_name}.pkl'
-if not Path(pkl_fpath.parents[0]).exists():
-    Path(pkl_fpath.parents[0]).mkdir(parents=True)
+if not Path(pkl_fpath).parents[0].exists():
+    Path(pkl_fpath).parents[0].mkdir(parents=True)
 
 if Path(pkl_fpath).exists():
         print(f'Audio files being loaded from {pkl_fpath}')

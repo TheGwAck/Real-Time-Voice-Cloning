@@ -124,14 +124,14 @@ if not Path(df_pkl_fpath_parent).exists():
 
 if len(sys.argv) > 5:
         thresholds = np.arange(threshold_min,threshold_max, threshold_step)
-        print(f'Creating pandas similarity tables with thresholds from {threshold_min} to {threshold_max} with a step of {threshold_step}.')
+        print(f'Creating {len(thresholds)} pandas similarity tables with thresholds from {threshold_min} to {threshold_max} with a step of {threshold_step}.')
 else: 
         thresholds = [threshold_min]
         print(f'Creating pandas similarity table with threshold of {threshold_min}.')
 
 for thresh in thresholds:
         df = get_pandas(sim_matrix, speaker_wavs, thresh)
-        df_pkl_fpath = f'/content/drive/MyDrive/Collabera_William/similarity/similarity_{thresh}.pkl'
+        df_pkl_fpath = f'/content/drive/MyDrive/Collabera_William/similarity/similarity_{round(thresh, 4)}.pkl'
         df.to_pickle(df_pkl_fpath)
 
 # Draw the plots

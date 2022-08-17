@@ -122,7 +122,7 @@ df_pkl_fpath_parent = f'/content/drive/MyDrive/Collabera_William/similarity'
 if not Path(df_pkl_fpath_parent).exists():
     Path(df_pkl_fpath_parent).mkdir(parents=True)
 
-if threshold_max:
+if len(sys.argv) > 5:
         thresholds = np.arange(threshold_min,threshold_max, threshold_step)
         print(f'Creating pandas similarity tables with thresholds from {threshold_min} to {threshold_max} with a step of {threshold_step}.')
 else: 

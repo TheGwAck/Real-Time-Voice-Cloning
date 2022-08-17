@@ -25,6 +25,7 @@ path = sys.argv[2]
 pkl_name = sys.argv[3]
 threshold_min = float(sys.argv[4])
 threshold_max = float(sys.argv[5])
+threshold_step = float(sys.argv[6])
 
 if torch.cuda.is_available():
         device_id = torch.cuda.current_device()
@@ -65,7 +66,7 @@ else:
                 pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 # embedding speaker
-spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs)])
+spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs, "Embedding", len(speaker_wavs), unit='wavs')])
 spk_embeds = torch.from_numpy(spk_embeds)
 sim_matrix = _model.similarity_matrix(spk_embeds)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
@@ -112,7 +113,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 # df = get_pandas(sim_matrix, speaker_wavs, threshold)
 # df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
 if threshold_max:
-        thresholds = np.arange(threshold_min,0.96,0.01)
+        thresholds = np.arange(threshold_min,threshold_max, threshold_step)
 else: 
         thresholds = threshold_min
 for thresh in thresholds:

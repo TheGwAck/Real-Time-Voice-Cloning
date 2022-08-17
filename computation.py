@@ -59,24 +59,12 @@ speaker_wavs = {speaker: list(map(preprocess_wav, wav_fpaths)) for speaker, wav_
                         lambda wav_fpath: wav_fpath.parent.stem)}
 
 # save dictionary to pickle file
-# with open('speaker_wavs.pickle', 'wb') as file:
-#         pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
+with open('speaker_wavs.pkl', 'wb') as file:
+        pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-# types = {}
-#embedding speaker
-# print(len([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs]))
-spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in speaker_wavs])
-print(spk_embeds.shape)
-# for speaker in speaker_wavs:
-#         types[speaker] = str(np.array(encoder.embed_speaker(speaker_wavs[speaker])).dtype)
-# for type in types.keys():
-#         if types[type] == "dtype('float32')":
-#                 print(types[type])
-print(spk_embeds.dtype)
+# embedding speaker
+spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs)])
 spk_embeds = torch.from_numpy(spk_embeds)
-print(spk_embeds.size())
-
-
 sim_matrix = _model.similarity_matrix(spk_embeds)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
 sim_matrix = normalize(sim_matrix, axis=1, norm='max')
@@ -91,18 +79,6 @@ sim_matrix = normalize(sim_matrix, axis=1, norm='max')
         add metrics for speaker-a-n and speaker-b-k
    '''     
 def create_panda_cols(x, sim_matrix, threshold):
-        
-        '''
-        similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
-        if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
-                same = 1
-        else:
-                same = 0
-        if (similarity >= threshold and same == 1) or (similarity < threshold and same == 0):
-                correct = 1
-        else:
-                correct = 0  
-        return (similarity, same, correct)'''
  
         similarity = sim_matrix[x['speaker_a_indice'],x['speaker_b_indice']]
         if x['speaker_a'].split('_')[0] == x['speaker_b'].split('_')[0]:
@@ -131,14 +107,14 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
        
         return df
 
-df = get_pandas(sim_matrix, speaker_wavs, threshold)
-df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
-# thresholds =[0.2,0.88,0.886]
-# for i, threshold in enumerate(thresholds):
-#         df = get_pandas(sim_matrix, speaker_wavs, threshold)
-#         #df[['similarity', 'correct']].groupby('correct').describe()
-#         df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')
-## Draw the plots
+# df = get_pandas(sim_matrix, speaker_wavs, threshold)
+# df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
+thresholds = range(0.8,0.96,0.01)
+for i, threshold in enumerate(thresholds):
+        df = get_pandas(sim_matrix, speaker_wavs, threshold)
+        df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(i)+'.pkl')
+
+# Draw the plots
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))
 
 labels_a = ["%s-A" % i for i in speaker_wavs.keys()]

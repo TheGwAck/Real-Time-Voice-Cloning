@@ -24,8 +24,9 @@ model = sys.argv[1]
 path = sys.argv[2]
 pkl_name = sys.argv[3]
 threshold_min = float(sys.argv[4])
-threshold_max = float(sys.argv[5])
-threshold_step = float(sys.argv[6])
+if len(sys.argv) > 5:        
+        threshold_max = float(sys.argv[5])
+        threshold_step = float(sys.argv[6])
 
 if torch.cuda.is_available():
         device_id = torch.cuda.current_device()
@@ -46,7 +47,7 @@ print("Preparing the encoder")
 
 _model = encoder.load_model(model)
 #preprocessing wavs
-pkl_fpath = f'/content/drive/MyDrive/Collabera_William/speaker_wavs_{pkl_name}.pkl'
+pkl_fpath = f'/content/drive/MyDrive/Collabera_William/computation_wavs/speaker_wavs_{pkl_name}.pkl'
 if Path(pkl_fpath).exists():
         print(f'Audio files being loaded from {pkl_fpath}')
         speaker_wavs = pd.read_pickle(pkl_fpath)
@@ -114,11 +115,15 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 # df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
 if threshold_max:
         thresholds = np.arange(threshold_min,threshold_max, threshold_step)
+        print(f'Creating pandas similarity tables with thresholds from {threshold_min} to {threshold_max} with a step of {threshold_step}.')
 else: 
         thresholds = threshold_min
+        print(f'Creating pandas similarity table with threshold of {threshold_min}')
+
+
 for thresh in thresholds:
         df = get_pandas(sim_matrix, speaker_wavs, thresh)
-        df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + str(thresh)+'.pkl')
+        df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity/similarity' + str(thresh)+'.pkl')
 
 # Draw the plots
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))

@@ -48,6 +48,9 @@ print("Preparing the encoder")
 _model = encoder.load_model(model)
 #preprocessing wavs
 pkl_fpath = f'/content/drive/MyDrive/Collabera_William/computation_wavs/speaker_wavs_{pkl_name}.pkl'
+if not Path(pkl_fpath.parents[0]).exists():
+    Path(pkl_fpath.parents[0]).mkdir(parents=True)
+
 if Path(pkl_fpath).exists():
         print(f'Audio files being loaded from {pkl_fpath}')
         speaker_wavs = pd.read_pickle(pkl_fpath)
@@ -113,17 +116,23 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
 
 # df = get_pandas(sim_matrix, speaker_wavs, threshold)
 # df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
+
+df_pkl_fpath_parent = f'/content/drive/MyDrive/Collabera_William/similarity'
+
+if not Path(df_pkl_fpath_parent).exists():
+    Path(df_pkl_fpath_parent).mkdir(parents=True)
+
 if threshold_max:
         thresholds = np.arange(threshold_min,threshold_max, threshold_step)
         print(f'Creating pandas similarity tables with thresholds from {threshold_min} to {threshold_max} with a step of {threshold_step}.')
 else: 
         thresholds = threshold_min
-        print(f'Creating pandas similarity table with threshold of {threshold_min}')
-
+        print(f'Creating pandas similarity table with threshold of {threshold_min}.')
 
 for thresh in thresholds:
         df = get_pandas(sim_matrix, speaker_wavs, thresh)
-        df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity/similarity' + str(thresh)+'.pkl')
+        df_pkl_fpath = f'/content/drive/MyDrive/Collabera_William/similarity/similarity_{thresh}.pkl'
+        df.to_pickle(df_pkl_fpath)
 
 # Draw the plots
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))

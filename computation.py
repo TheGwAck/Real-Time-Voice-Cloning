@@ -70,7 +70,7 @@ else:
                 pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 # embedding speaker
-spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs, "Embedding", len(speaker_wavs), unit='wavs')])
+spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs, "Embedding", len(speaker_wavs), unit='speaker')])
 spk_embeds = torch.from_numpy(spk_embeds)
 sim_matrix = _model.similarity_matrix(spk_embeds)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()

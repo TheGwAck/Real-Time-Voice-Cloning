@@ -76,7 +76,7 @@ if not Path(embedd_fpath).parents[0].exists():
 
 if Path(embedd_fpath).exists():
         print(f'Embeddings being loaded from {embedd_fpath}')
-        speaker_wavs = pd.read_pickle(embedd_fpath)
+        spk_embeds = pd.read_pickle(embedd_fpath)
 else:
         spk_embeds = np.array([encoder.embed_speaker(speaker_wavs[speaker]) for speaker in tqdm(speaker_wavs, "Embeddings", len(speaker_wavs), unit='speaker')])
         spk_embeds = torch.from_numpy(spk_embeds)

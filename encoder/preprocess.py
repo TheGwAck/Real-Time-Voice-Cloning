@@ -94,7 +94,7 @@ def _preprocess_speaker(speaker_dir: Path, datasets_root: Path, out_dir: Path, s
     wav_paths = list(speaker_dir.glob("**/*.wav"))
     for wav_path in wav_paths:
         # Check if the target output file already exists
-        out_fname = wav_path.stem
+        out_fname = wav_path.name
         out_fname = out_fname.replace(".wav", ".npy")
         if skip_existing and out_fname in existing_fnames:
             continue
@@ -111,7 +111,6 @@ def _preprocess_speaker(speaker_dir: Path, datasets_root: Path, out_dir: Path, s
 
         out_fpath = Path(speaker_out_dir).joinpath(out_fname)
         np.save(out_fpath, frames)
-        print(f'out_fname: {out_fname}\nout_fpath: {out_fpath}\n')
         sources_file.write(f"{out_fname},{wav_path}\n")
         audio_durs.append(len(wav) / sampling_rate)
 

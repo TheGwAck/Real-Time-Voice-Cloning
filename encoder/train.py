@@ -59,12 +59,13 @@ def train(run_id: str, clean_data_root: Path, models_dir: Path, umap_every: int,
         print("Starting the training from scratch.")
     model.train()
 
+    # TODO: figure out how to run visualizations on Google Colab
     # Initialize the visualization environment
-    vis = Visualizations(run_id, vis_every, server=visdom_server, disabled=no_visdom)
-    vis.log_dataset(dataset)
-    vis.log_params()
-    device_name = str(torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU")
-    vis.log_implementation({"Device": device_name})
+    # vis = Visualizations(run_id, vis_every, server=visdom_server, disabled=no_visdom)
+    # vis.log_dataset(dataset)
+    # vis.log_params()
+    # device_name = str(torch.cuda.get_device_name(0) if torch.cuda.is_available() else "CPU")
+    # vis.log_implementation({"Device": device_name})
 
     # Training loop
     profiler = Profiler(summarize_every=10, disabled=False)
@@ -91,17 +92,19 @@ def train(run_id: str, clean_data_root: Path, models_dir: Path, umap_every: int,
         optimizer.step()
         profiler.tick("Parameter update")
 
+        # cf visualization TODO
         # Update visualizations
         # learning_rate = optimizer.param_groups[0]["lr"]
-        vis.update(loss.item(), eer, step)
+        # vis.update(loss.item(), eer, step)
 
+        # cf visualization TODO
         # Draw projections and save them to the backup folder
-        if umap_every != 0 and step % umap_every == 0:
-            print("Drawing and saving projections (step %d)" % step)
-            projection_fpath = model_dir / f"umap_{step:06d}.png"
-            embeds = embeds.detach().cpu().numpy()
-            vis.draw_projections(embeds, utterances_per_speaker, step, projection_fpath)
-            vis.save()
+        # if umap_every != 0 and step % umap_every == 0:
+        #     print("Drawing and saving projections (step %d)" % step)
+        #     projection_fpath = model_dir / f"umap_{step:06d}.png"
+        #     embeds = embeds.detach().cpu().numpy()
+        #     vis.draw_projections(embeds, utterances_per_speaker, step, projection_fpath)
+        #     vis.save()
 
         # Overwrite the latest version of the model
         if save_every != 0 and step % save_every == 0:

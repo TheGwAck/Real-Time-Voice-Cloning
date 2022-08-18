@@ -39,7 +39,6 @@ if __name__ == "__main__":
     parser.add_argument("--no_visdom", action="store_true", help= \
         "Disable visdom.")
     args = parser.parse_args()
-%run encoder_train.py encoder_william_1 /content/drive/MyDrive/Collabera_William/TED_XXX -m encoder_jawad
     # Run the training
     print_args(args, parser)
     train(**vars(args))

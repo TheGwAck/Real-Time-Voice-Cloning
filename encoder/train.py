@@ -69,10 +69,9 @@ def train(run_id: str, clean_data_root: Path, models_dir: Path, umap_every: int,
 
     # Training loop
     profiler = Profiler(summarize_every=10, disabled=False)
-    print(f'LENGTH: {len(loader)}')
     for step, speaker_batch in enumerate(loader, init_step):
         profiler.tick("Blocking, waiting for batch (threaded)")
-
+        
         # Forward pass
         inputs = torch.from_numpy(speaker_batch.data).to(device)
         sync(device)

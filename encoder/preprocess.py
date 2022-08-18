@@ -62,6 +62,7 @@ def _init_preprocess_dataset(dataset_name, datasets_root, out_dir) -> (Path, Dat
     if not dataset_root.exists():
         print("Couldn\'t find %s, skipping this dataset." % dataset_root)
         return None, None
+    # Create the output directory if it doesn't already exist
     if not Path(out_dir).exists():
         Path(out_dir).mkdir(parents=True)
     return dataset_root, DatasetLog(out_dir, dataset_name)
@@ -199,6 +200,7 @@ def preprocess_tedlium(datasets_root: Path, dataset_name, out_dir: Path, skip_ex
     _preprocess_speaker_dirs(speaker_dirs, dataset_name, dataset_root, out_dir,
                              skip_existing, logger)
 
+# Get inline arguments to preprocess TEDLIUM
 out_dir = sys.argv[3]
 datasets_root = sys.argv[1]
 dataset_name = sys.argv[2]

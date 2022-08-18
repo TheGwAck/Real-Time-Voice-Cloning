@@ -70,7 +70,7 @@ else:
         with open(pkl_fpath, 'wb') as file:
                 pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-#Embed speakers and create pkl file of embedded speakers or load embedded speakers from pkl file
+# Embed speakers and create pkl file of embedded speakers or load embedded speakers from pkl file
 embedd_fpath = f'/content/drive/MyDrive/Collabera_William/embeddings/embeddings_{pkl_name}.pkl'
 if not Path(embedd_fpath).parents[0].exists():
         Path(embedd_fpath).parents[0].mkdir(parents=True)
@@ -84,7 +84,7 @@ else:
         with open(embedd_fpath, 'wb') as file:
                 pickle.dump(spk_embeds, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-#Create similarity matrix from speaker embeddings and normalize it
+# Create similarity matrix from speaker embeddings and normalize it
 sim_matrix = _model.similarity_matrix(spk_embeds)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
 sim_matrix = normalize(sim_matrix, axis=1, norm='max')

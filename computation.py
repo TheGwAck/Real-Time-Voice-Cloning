@@ -141,14 +141,10 @@ else:
         thresholds = [threshold_min]
         print(f'Creating pandas similarity table with threshold of {threshold_min}.')
 
-
-pandas = partial(get_pandas, sim_matrix=sim_matrix, speaker_wavs=speaker_wavs)
-with Pool(2) as pool:
-        run_convert = list(tqdm(pool.map(pandas, thresholds), 'Creating pandas', total=len(thresholds), unit='dataframe'))	
-# for thresh in thresholds:
-#         df = get_pandas(sim_matrix, speaker_wavs, thresh)
-#         df_pkl_fpath = f'/content/drive/MyDrive/Collabera_William/similarity/similarity_{round(thresh, 4)}.pkl'
-#         df.to_pickle(df_pkl_fpath)
+for thresh in thresholds:
+        df = get_pandas(sim_matrix, speaker_wavs, thresh)
+        df_pkl_fpath = f'/content/drive/MyDrive/Collabera_William/similarity/similarity_{round(thresh, 4)}.pkl'
+        df.to_pickle(df_pkl_fpath)
 
 # Draw the plots
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))

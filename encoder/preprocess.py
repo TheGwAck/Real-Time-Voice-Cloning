@@ -62,7 +62,7 @@ def _init_preprocess_dataset(dataset_name, datasets_root, out_dir) -> (Path, Dat
     if not dataset_root.exists():
         print("Couldn\'t find %s, skipping this dataset." % dataset_root)
         return None, None
-    if not out_dir.exists():
+    if not Path(out_dir).exists():
         Path(out_dir).mkdir(parents=True)
     return dataset_root, DatasetLog(out_dir, dataset_name)
 

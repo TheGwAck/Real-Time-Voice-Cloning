@@ -44,9 +44,10 @@ else:
         print("Using CPU for inference.\n")
 
 print("Preparing the encoder")
-
+#Load pretrained model
 _model = encoder.load_model(model)
-#preprocessing wavs
+
+#Preprocess wavs and create pkl or load pkl of preprocessed wavs
 pkl_fpath = f'/content/drive/MyDrive/Collabera_William/computation_wavs/speaker_wavs_{pkl_name}.pkl'
 if not Path(pkl_fpath).parents[0].exists():
     Path(pkl_fpath).parents[0].mkdir(parents=True)
@@ -69,7 +70,7 @@ else:
         with open(pkl_fpath, 'wb') as file:
                 pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-# embedding speaker
+#Embed speakers and create pkl file of embedded speakers or load embedded speakers from pkl file
 embedd_fpath = f'/content/drive/MyDrive/Collabera_William/embeddings/embeddings_{pkl_name}.pkl'
 if not Path(embedd_fpath).parents[0].exists():
         Path(embedd_fpath).parents[0].mkdir(parents=True)
@@ -83,7 +84,7 @@ else:
         with open(embedd_fpath, 'wb') as file:
                 pickle.dump(spk_embeds, file, protocol=pickle.HIGHEST_PROTOCOL)
 
-
+#Create similarity matrix from speaker embeddings and normalize it
 sim_matrix = _model.similarity_matrix(spk_embeds)
 sim_matrix = torch.mean(sim_matrix, dim = 1).detach().numpy()
 sim_matrix = normalize(sim_matrix, axis=1, norm='max')
@@ -126,9 +127,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
        
         return df
 
-# df = get_pandas(sim_matrix, speaker_wavs, threshold)
-# df.to_pickle('/content/drive/MyDrive/Collabera_William/similarity' + pkl_name +'.pkl')
-
+# Create list of dataframes or single dataframe according to inline arguments and pkl them
 df_pkl_fpath_parent = f'/content/drive/MyDrive/Collabera_William/similarity'
 
 if not Path(df_pkl_fpath_parent).exists():
@@ -146,7 +145,7 @@ for thresh in thresholds:
         df_pkl_fpath = f'/content/drive/MyDrive/Collabera_William/similarity/similarity_{round(thresh, 4)}.pkl'
         df.to_pickle(df_pkl_fpath)
 
-# Draw the plots
+# Draw the plots, not updated
 fix, axs = plt.subplots(1, 2, figsize=(8, 5))
 
 labels_a = ["%s-A" % i for i in speaker_wavs.keys()]

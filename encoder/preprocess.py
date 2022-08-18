@@ -60,8 +60,7 @@ class DatasetLog:
 def _init_preprocess_dataset(dataset_name, datasets_root, out_dir) -> (Path, DatasetLog):
     dataset_root = Path(datasets_root).joinpath(dataset_name)
     if not dataset_root.exists():
-        print("Couldn\'t find %s, skipping this dataset." % dataset_root)
-        return None, None
+        Path(dataset_name).mkdir(parents=True)
     return dataset_root, DatasetLog(out_dir, dataset_name)
 
 

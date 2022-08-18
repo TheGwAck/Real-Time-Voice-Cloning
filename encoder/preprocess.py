@@ -111,6 +111,7 @@ def _preprocess_speaker(speaker_dir: Path, datasets_root: Path, out_dir: Path, s
 
         out_fpath = Path(speaker_out_dir).joinpath(out_fname)
         np.save(out_fpath, frames)
+        print('out_fname: ', out_fname)
         sources_file.write(f"{out_fname},{wav_path}\n")
         audio_durs.append(len(wav) / sampling_rate)
 

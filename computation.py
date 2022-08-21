@@ -48,7 +48,7 @@ print("Preparing the encoder")
 _model = encoder.load_model(model)
 
 #Preprocess wavs and create pkl or load pkl of preprocessed wavs
-pkl_fpath = f'/content/drive/MyDrive/Collabera_William/computation_wavs/speaker_wavs_{pkl_name}.pkl'
+pkl_fpath = f'/content/drive/MyDrive/Collabera_Voice_Verification/computation_wavs/speaker_wavs_{pkl_name}.pkl'
 if not Path(pkl_fpath).parents[0].exists():
     Path(pkl_fpath).parents[0].mkdir(parents=True)
 
@@ -71,7 +71,7 @@ else:
                 pickle.dump(speaker_wavs, file, protocol=pickle.HIGHEST_PROTOCOL)
 
 # Embed speakers and create pkl file of embedded speakers or load embedded speakers from pkl file
-embedd_fpath = f'/content/drive/MyDrive/Collabera_William/embeddings/embeddings_{pkl_name}.pkl'
+embedd_fpath = f'/content/drive/MyDrive/Collabera_Voice_Verification/embeddings/embeddings_{pkl_name}.pkl'
 if not Path(embedd_fpath).parents[0].exists():
         Path(embedd_fpath).parents[0].mkdir(parents=True)
 
@@ -128,7 +128,7 @@ def get_pandas(sim_matrix, speaker_wavs, threshold):
         return df
 
 # Create list of dataframes or single dataframe according to inline arguments and pkl them
-df_pkl_fpath_parent = f'/content/drive/MyDrive/Collabera_William/similarity'
+df_pkl_fpath_parent = f'/content/drive/MyDrive/Collabera_Voice_Verification/similarity'
 
 if not Path(df_pkl_fpath_parent).exists():
     Path(df_pkl_fpath_parent).mkdir(parents=True)
@@ -142,7 +142,7 @@ else:
 
 for thresh in thresholds:
         df = get_pandas(sim_matrix, speaker_wavs, thresh)
-        df_pkl_fpath = f'/content/drive/MyDrive/Collabera_William/similarity/similarity_{round(thresh, 4)}.pkl'
+        df_pkl_fpath = f'/content/drive/MyDrive/Collabera_Voice_Verification/similarity/similarity_{round(thresh, 4)}.pkl'
         df.to_pickle(df_pkl_fpath)
 
 # Draw the plots, not updated

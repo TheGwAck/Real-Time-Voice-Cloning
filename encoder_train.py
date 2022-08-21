@@ -44,4 +44,4 @@ if __name__ == "__main__":
     train(**vars(args))
     
 #Colab code to run train:    
-# %run encoder_train.py encoder_william_1 /content/drive/MyDrive/Collabera_William/TED_XXX -m encoder_jawad
+# %run encoder_train.py encoder_william_1 /content/drive/MyDrive/Collabera_Voice_Verification/TED_XXX -m encoder_jawad
